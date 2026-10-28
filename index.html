@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Library</title>
+<style>
+  :root{--bg:#f4f6fb;--card:#fff;--text:#1b2233;--muted:#6b7385;--line:#e4e8f0;--brand:#2f5bea;--brand2:#e8eefe;--ok:#15803d;--bad:#b91c1c;--warn:#b45309;--okbg:#dcfce7;--badbg:#fee2e2;--warnbg:#fef3c7;--bar:#cfd8f6}
+  @media (prefers-color-scheme:dark){:root{--bg:#0f1218;--card:#181c25;--text:#e8eaf0;--muted:#98a0b3;--line:#272c38;--brand:#6b8cff;--brand2:#212a45;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--okbg:#14301f;--badbg:#3b1717;--warnbg:#3a2e12;--bar:#2c3558}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  header{background:var(--card);border-bottom:1px solid var(--line);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:5}
+  header h1{font-size:18px;margin:0;flex:1}
+  .user{display:flex;align-items:center;gap:8px;font-size:14px}
+  .avatar{width:30px;height:30px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:600;font-size:13px;flex:none}
+  .role{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--brand2);color:var(--brand);text-transform:uppercase;letter-spacing:.04em}
+  .layout{display:flex;max-width:1280px;margin:0 auto;padding:18px 16px;gap:18px;align-items:flex-start}
+  nav{width:200px;flex:none;position:sticky;top:76px;display:flex;flex-direction:column;gap:4px}
+  nav button{text-align:left;background:transparent;color:var(--text);border:0;padding:9px 12px;border-radius:8px}
+  nav button:hover{background:var(--brand2)} nav button.active{background:var(--brand);color:#fff}
+  main{flex:1;min-width:0}
+  @media(max-width:760px){.layout{flex-direction:column}nav{width:100%;flex-direction:row;flex-wrap:wrap;position:static}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
+  h2{font-size:16px;margin:0 0 4px} h3{font-size:14px;margin:18px 0 8px}
+  p.sub{margin:0 0 14px;color:var(--muted);font-size:13px}
+  input,select,button{font:inherit;padding:8px 11px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text)}
+  input:focus,select:focus{outline:2px solid var(--brand);outline-offset:-1px}
+  button{cursor:pointer;background:var(--brand);color:#fff;border:0}
+  button:hover{filter:brightness(1.08)}
+  button.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+  button.danger{background:var(--bad)} button.green{background:var(--ok)}
+  button.small{padding:4px 10px;font-size:13px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+  .row input{flex:1;min-width:130px}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:16px}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:12px;margin-bottom:16px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+  .stat b{display:block;font-size:24px;line-height:1.2} .stat span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .stat.warn b{color:var(--warn)} .stat.good b{color:var(--ok)} .stat.bad b{color:var(--bad)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+  tr:last-child td{border-bottom:0} tbody tr:hover{background:var(--brand2)}
+  .tablewrap{overflow-x:auto}
+  .pill{padding:2px 9px;border-radius:99px;font-size:12px;white-space:nowrap;display:inline-block}
+  .pill.in{background:var(--okbg);color:var(--ok)} .pill.out{background:var(--badbg);color:var(--bad)} .pill.warn{background:var(--warnbg);color:var(--warn)}
+  .muted{color:var(--muted)} .nowrap{white-space:nowrap}
+  .empty{text-align:center;padding:26px 10px;color:var(--muted)}
+  .link{text-align:left;background:none;color:var(--brand);padding:0;border:0;text-decoration:underline;cursor:pointer;font-size:inherit}
+  .acts{display:flex;gap:5px;flex-wrap:wrap}
+  .profile{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .profile .avatar{width:46px;height:46px;font-size:18px}
+  /* bar charts */
+  .bar{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:13px}
+  .bar .lbl{width:42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bar .track{flex:1;background:var(--brand2);border-radius:5px;height:16px;display:flex;overflow:hidden}
+  .bar .fill{background:var(--brand);height:100%} .bar .fill.b{background:var(--warn)} .bar .fill.g{background:var(--ok)}
+  .bar .val{min-width:54px;white-space:nowrap;text-align:right;color:var(--muted)}
+  .days{display:flex;gap:8px;align-items:flex-end;height:120px;margin-top:6px}
+  .days div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:11px;color:var(--muted)}
+  .days .cols{display:flex;gap:3px;align-items:flex-end;height:90px;width:100%;justify-content:center}
+  .days .cols i{display:block;width:40%;max-width:18px;background:var(--brand);border-radius:3px 3px 0 0;min-height:2px}
+  .days .cols i.r{background:var(--ok)}
+  .legend{font-size:12px;color:var(--muted)} .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;vertical-align:middle}
+  /* modal */
+  #modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:4vh 12px;overflow:auto;z-index:20}
+  #modal .box{background:var(--bg);border-radius:14px;max-width:880px;width:100%;padding:18px;position:relative}
+  #modal .x{position:absolute;right:12px;top:12px}
+  #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);padding:10px 18px;border-radius:9px;color:#fff;display:none;z-index:30;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+  #login{max-width:360px;margin:12vh auto}
+  #login input{width:100%;margin-bottom:10px}
+  .demo{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+<header>
+  <h1>📚 Smart Library</h1>
+  <div class="user hidden" id="userbox"><div class="avatar" id="av"></div><span id="who"></span><span class="role" id="role"></span></div>
+  <button id="logout" class="ghost small hidden">Logout</button>
+</header>
+
+<div id="login" class="card">
+  <h2>Welcome back</h2><p class="sub">Log in to browse, issue and manage books.</p>
+  <input id="u" placeholder="Username / Student ID" autocomplete="username">
+  <input id="p" type="password" placeholder="Password" autocomplete="current-password">
+  <button id="loginBtn" style="width:100%">Login</button>
+  <div class="demo"><span class="muted" style="font-size:12px;width:100%">Quick fill (demo accounts):</span>
+    <button class="ghost small" onclick="fill('admin','admin123')">admin</button>
+    <button class="ghost small" onclick="fill('priya','priya123')">priya</button>
+    <button class="ghost small" onclick="fill('rahul','rahul123')">rahul</button></div>
+</div>
+
+<div class="layout hidden" id="app">
+  <nav id="nav"></nav>
+  <main><div class="stats" id="stats"></div><div id="view"></div></main>
+</div>
+<div id="modal"><div class="box"><button class="ghost small x" onclick="closeModal()">✕ Close</button><div id="mbody"></div></div></div>
+<div id="toast"></div>
+
+<script>
+let session = null, tab = 'dash';
+const F = { q: '', sort: 'title', genre: '', status: '' };          // book filters
+const T = { user: '', book: '', status: '' };                       // issue-log filters
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const NR = '<span class="muted">—</span>';
+const fmtDate = iso => iso ? new Date(iso).toLocaleString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '<span class="muted">Not recorded</span>';
+const fmtDay = iso => iso ? new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : NR;
+const heldFor = iso => { if (!iso) return NR; const d = Math.floor((Date.now() - new Date(iso)) / 864e5); return d <= 0 ? 'Today' : d + (d === 1 ? ' day' : ' days'); };
+const money = n => '₹' + (+n || 0);
+const ub = n => `<button class="link" data-u="${esc(n)}" onclick="openStudent(this.dataset.u)">${esc(n)}</button>`;
+const bb = (id, t) => `<button class="link" onclick="openBook(${id})">${esc(t)}</button>`;
+
+function toast(msg, good = true) {
+  const t = $('toast'); t.textContent = msg; t.style.background = good ? '#15803d' : '#b91c1c';
+  t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(() => t.style.display = 'none', 2800);
+}
+async function api(method, url, body, raw) {
+  const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json', ...(session ? { Authorization: 'Bearer ' + session.token } : {}) }, body: body ? JSON.stringify(body) : undefined });
+  if (raw && r.ok) return r;
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) { if (r.status === 401 && session) logout(true); throw new Error(data.error || 'Request failed'); }
+  return data;
+}
+const act = async (fn, okMsg, after) => { try { await fn(); if (okMsg) toast(okMsg); if (after) after(); render(); } catch (e) { toast(e.message, false); } };
+const modalOpen = () => $('modal').style.display === 'flex';
+function openModal(html) { $('mbody').innerHTML = html; $('modal').style.display = 'flex'; }
+function closeModal() { $('modal').style.display = 'none'; }
+$('modal').onclick = e => { if (e.target.id === 'modal') closeModal(); };
+
+// ---------- login / logout ----------
+const fill = (u, p) => { $('u').value = u; $('p').value = p; login(); };
+async function login() {
+  try {
+    session = await api('POST', '/api/login', { username: $('u').value.trim(), password: $('p').value });
+    $('login').classList.add('hidden'); $('app').classList.remove('hidden');
+    $('logout').classList.remove('hidden'); $('userbox').classList.remove('hidden');
+    $('who').textContent = session.username; $('role').textContent = session.role; $('av').textContent = session.username[0].toUpperCase();
+    tab = session.role === 'admin' ? 'dash' : 'books'; Object.assign(F, { q: '', sort: 'title', genre: '', status: '' }); render();
+  } catch (e) { toast(e.message, false); }
+}
+function logout(silent) {
+  if (session && !silent) api('POST', '/api/logout').catch(() => {});
+  session = null; closeModal(); $('app').classList.add('hidden'); $('login').classList.remove('hidden');
+  $('logout').classList.add('hidden'); $('userbox').classList.add('hidden'); $('p').value = '';
+}
+$('loginBtn').onclick = login; $('p').onkeydown = e => { if (e.key === 'Enter') login(); }; $('logout').onclick = () => logout();
+
+// ---------- layout pieces ----------
+const isAdmin = () => session.role === 'admin';
+const tabsFor = () => isAdmin()
+  ? [['dash', '📊 Dashboard'], ['books', '📚 Books'], ['stock', '📦 Stock'], ['log', '🧾 Issue log'], ['students', '👥 Students'], ['desk', '🔁 Issue / Return'], ['add', '➕ Add book'], ['settings', '⚙️ Settings']]
+  : [['books', '📚 Browse books'], ['mine', '📖 My issued books'], ['history', '🕘 History'], ['recs', '✨ Recommended'], ['account', '🔑 Account']];
+const card = (n, l, c = '') => `<div class="stat ${c}"><b>${n}</b><span>${l}</span></div>`;
+async function renderStats() {
+  const s = await api('GET', '/api/stats');
+  $('stats').innerHTML = card(s.totalBooks, 'Total books') + card(s.available, 'Available', 'good') + card(s.issued, 'Issued', 'warn') +
+    (isAdmin() ? card(s.students, 'Students') + card(s.overdue, 'Overdue', s.overdue ? 'bad' : '') + card(money(s.totalFines), 'Fines')
+               : card(s.myIssued, 'I have now', 'warn') + card(s.myTotal, 'Borrowed overall') + card(money(s.myFines), 'My fines', s.myFines ? 'bad' : ''));
+}
+const table = (head, rows, empty) => rows.length
+  ? `<div class="tablewrap"><table><thead><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>`
+  : `<div class="empty">${empty}</div>`;
+const statusPill = t => t.status === 'RETURNED' ? '<span class="pill in">Returned</span>' : t.overdue ? '<span class="pill out">Overdue</span>' : '<span class="pill warn">Issued</span>';
+const bookPill = a => a ? '<span class="pill in">Available</span>' : '<span class="pill out">Issued</span>';
+const duePill = t => !t.dueAt ? NR : fmtDay(t.dueAt) + (t.overdue ? ` <span class="pill out">${t.overdueDays}d late · ${money(t.fine)}</span>` : '');
+const bars = (items, max, cls = '') => items.map(i => `<div class="bar"><span class="lbl" title="${esc(i.label)}">${i.html || esc(i.label)}</span><div class="track"><div class="fill ${cls}" style="width:${max ? Math.round(i.value / max * 100) : 0}%"></div></div><span class="val">${esc(i.val ?? i.value)}</span></div>`).join('') || '<div class="empty">No data yet</div>';
+
+async function render() {
+  if (!session) return;
+  $('nav').innerHTML = tabsFor().map(([k, l]) => `<button class="${k === tab ? 'active' : ''}" onclick="tab='${k}';render()">${l}</button>`).join('');
+  const v = $('view');
+  try {
+    renderStats().catch(() => {});
+    await ({ dash: viewDash, books: viewBooks, stock: viewStock, log: viewLog, students: viewStudents, desk: viewDesk, add: viewAdd, settings: viewSettings,
+             mine: viewMine, history: viewHistory, recs: viewRecs, account: viewAccount }[tab])(v);
+  } catch (e) { if (session) toast(e.message, false); }
+}
+
+// ---------- ADMIN: dashboard ----------
+async function viewDash(v) {
+  const d = await api('GET', '/api/dashboard');
+  const maxPop = Math.max(1, ...d.topBooks.map(b => b.timesIssued));
+  const maxDay = Math.max(1, ...d.days.map(x => Math.max(x.issued, x.returned)));
+  const maxB = Math.max(1, ...d.borrowers.map(b => b.total));
+  v.innerHTML = `<div class="grid2">
+    <div class="card"><h2>Most popular books</h2><p class="sub">By number of times issued</p>${bars(d.topBooks.map(b => ({ label: b.title, html: bb(b.id, b.title), value: b.timesIssued, val: b.timesIssued + '×' })), maxPop)}
+      <p class="sub" style="margin:10px 0 0">${d.neverIssued} book${d.neverIssued === 1 ? '' : 's'} never issued · ${d.totalIssues} issues in total</p></div>
+    <div class="card"><h2>Stock by genre</h2><p class="sub">Available vs issued copies</p>
+      ${d.genres.map(g => `<div class="bar"><span class="lbl">${esc(g.genre)}</span><div class="track"><div class="fill g" style="width:${g.available / g.total * 100}%"></div><div class="fill b" style="width:${g.issued / g.total * 100}%"></div></div><span class="val">${g.available}/${g.total}</span></div>`).join('')}
+      <div class="legend"><i style="background:var(--ok)"></i>Available<i style="background:var(--warn)"></i>Issued</div></div>
+    <div class="card"><h2>Last 7 days</h2><p class="sub">Issues and returns per day</p>
+      <div class="days">${d.days.map(x => `<div><div class="cols"><i style="height:${x.issued / maxDay * 100}%" title="${x.issued} issued"></i><i class="r" style="height:${x.returned / maxDay * 100}%" title="${x.returned} returned"></i></div>${x.day.slice(5)}</div>`).join('')}</div>
+      <div class="legend"><i style="background:var(--brand)"></i>Issued<i style="background:var(--ok)"></i>Returned</div></div>
+    <div class="card"><h2>Top borrowers</h2><p class="sub">Students who borrowed the most</p>${bars(d.borrowers.map(b => ({ label: b.user, html: ub(b.user), value: b.total, val: b.total + ' (' + b.current + ' now)' })), maxB, 'g')}</div></div>
+  <div class="card"><h2>⚠️ Overdue books</h2><p class="sub">Loan period ${d.settings.loanDays} days · fine ${money(d.settings.finePerDay)} per day</p>
+    ${table(['Student', 'Book', 'Issued', 'Due', 'Days late', 'Fine', ''], d.overdue.map(t => `<tr><td>${ub(t.user)}</td><td>${bb(t.bookId, t.title)}</td><td>${fmtDay(t.issuedAt)}</td><td>${fmtDay(t.dueAt)}</td><td>${t.overdueDays}</td><td><b>${money(t.fine)}</b></td>
+      <td><button class="small green" data-u="${esc(t.user)}" onclick="adminReturn(this.dataset.u,${t.bookId})">Mark returned</button></td></tr>`), '✅ No overdue books.')}</div>
+  <div class="card"><h2>Recent activity</h2>${table(['Student', 'Book', 'Issued', 'Returned', 'Status'], d.recent.map(t => `<tr><td>${ub(t.user)}</td><td>${bb(t.bookId, t.title)}</td><td>${fmtDate(t.issuedAt)}</td><td>${t.returnedAt ? fmtDate(t.returnedAt) : NR}</td><td>${statusPill(t)}</td></tr>`), 'No dated activity yet. Issue a book to see it here.')}</div>`;
+}
+
+// ---------- books (admin + student) ----------
+async function viewBooks(v) {
+  const all = await api('GET', `/api/books?sort=${F.sort}&q=${encodeURIComponent(F.q)}`);
+  const holders = {};
+  if (isAdmin()) (await api('GET', '/api/transactions?status=ISSUED')).forEach(t => holders[t.bookId] = t);
+  const genres = [...new Set(all.map(b => b.genre))].sort();
+  const books = all.filter(b => (!F.genre || b.genre === F.genre) && (!F.status || String(b.available) === F.status));
+  const rows = books.map(b => `<tr><td>${b.id}</td><td><b>${isAdmin() ? bb(b.id, b.title) : esc(b.title)}</b></td><td>${esc(b.author)}</td><td>${esc(b.genre)}</td><td>${b.timesIssued}×</td><td>${bookPill(b.available)}</td>
+    ${isAdmin() ? `<td>${holders[b.id] ? ub(holders[b.id].user) : NR}</td><td><div class="acts"><button class="small ghost" onclick="openBook(${b.id})">Details</button><button class="danger small" onclick="delBook(${b.id})">Delete</button></div></td>`
+      : `<td>${b.available ? `<button class="small" onclick="issue(${b.id})">Issue</button>` : ''}</td>`}</tr>`);
+  v.innerHTML = `<div class="card"><div class="row">
+      <input id="q" placeholder="Search title, author or ID…" value="${esc(F.q)}">
+      <select id="genre"><option value="">All genres</option>${genres.map(g => `<option ${g === F.genre ? 'selected' : ''}>${esc(g)}</option>`).join('')}</select>
+      <select id="status"><option value="">Any status</option><option value="1" ${F.status === '1' ? 'selected' : ''}>Available</option><option value="0" ${F.status === '0' ? 'selected' : ''}>Issued</option></select>
+      <select id="sort"><option value="title">Title A–Z</option><option value="author">Author A–Z</option><option value="popularity">Most popular</option><option value="id">Book ID</option></select>
+      <button onclick="F.q=$('q').value;render()">Search</button>${isAdmin() ? '<button class="ghost" onclick="exportCsv(\'books\')">⬇ CSV</button>' : ''}</div>
+      <p class="sub">${books.length} book${books.length === 1 ? '' : 's'} shown</p>
+      ${table(['ID', 'Title', 'Author', 'Genre', 'Issued', 'Status', ...(isAdmin() ? ['Held by', ''] : ['']), ], rows, 'No books match your filters.')}</div>`;
+  $('sort').value = F.sort;
+  $('sort').onchange = e => { F.sort = e.target.value; render(); }; $('genre').onchange = e => { F.genre = e.target.value; render(); };
+  $('status').onchange = e => { F.status = e.target.value; render(); }; $('q').onkeydown = e => { if (e.key === 'Enter') { F.q = e.target.value; render(); } };
+}
+async function openBook(id) {
+  const b = await api('GET', '/api/books/' + id).catch(e => toast(e.message, false)); if (!b) return;
+  const rows = b.log.map(t => `<tr><td>${ub(t.user)}</td><td>${fmtDate(t.issuedAt)}</td><td>${fmtDay(t.dueAt)}</td><td>${t.returnedAt ? fmtDate(t.returnedAt) : NR}</td><td>${statusPill(t)}</td><td>${t.fine ? money(t.fine) : NR}</td></tr>`);
+  openModal(`<div class="card"><h2>${esc(b.title)}</h2><p class="sub">Book ID ${b.id} · ${esc(b.author)} · ${esc(b.genre)}</p>
+    <div class="stats" style="margin-bottom:0">${card(b.timesIssued + '×', 'Times issued')}${card(b.available ? 'Available' : 'Issued', 'Stock status', b.available ? 'good' : 'warn')}${card(b.holder ? esc(b.holder) : '—', 'Currently with')}</div>
+    <h3>Edit details</h3><div class="row"><input id="et" value="${esc(b.title)}"><input id="ea" value="${esc(b.author)}"><input id="eg" value="${esc(b.genre)}">
+      <button onclick="saveBook(${b.id})">Save</button></div>
+    <h3>Issue history (${b.log.length})</h3>${table(['Student', 'Issued', 'Due', 'Returned', 'Status', 'Fine'], rows, 'This book has not been issued yet.')}
+    ${b.holder ? `<div class="row" style="margin-top:12px"><button class="green" data-u="${esc(b.holder)}" onclick="adminReturn(this.dataset.u,${b.id})">Mark returned</button></div>` : ''}</div>`);
+}
+const saveBook = id => act(() => api('PUT', '/api/books/' + id, { title: $('et').value, author: $('ea').value, genre: $('eg').value }), 'Book updated', () => closeModal());
+
+// ---------- ADMIN: stock ----------
+async function viewStock(v) {
+  const [d, books, out] = await Promise.all([api('GET', '/api/dashboard'), api('GET', '/api/books?sort=title'), api('GET', '/api/transactions?status=ISSUED')]);
+  const total = books.length, avail = books.filter(b => b.available).length;
+  v.innerHTML = `<div class="card"><h2>Stock overview</h2><p class="sub">Each book has one copy in this library, so stock = available (on shelf) vs issued (on loan).</p>
+    ${table(['Genre', 'Total', 'Available', 'Issued', 'Availability', 'Times issued'], d.genres.map(g => `<tr><td><b>${esc(g.genre)}</b></td><td>${g.total}</td><td><span class="pill in">${g.available}</span></td><td><span class="pill ${g.issued ? 'warn' : 'in'}">${g.issued}</span></td>
+      <td style="min-width:140px"><div class="track" style="display:flex;height:10px;background:var(--badbg);border-radius:5px;overflow:hidden"><div style="width:${g.available / g.total * 100}%;background:var(--ok)"></div></div></td><td>${g.timesIssued}</td></tr>`)
+      .concat(`<tr><td><b>All genres</b></td><td><b>${total}</b></td><td><b>${avail}</b></td><td><b>${total - avail}</b></td><td></td><td><b>${books.reduce((s, b) => s + b.timesIssued, 0)}</b></td></tr>`), '')}
+    <h3 style="margin-top:22px">All books</h3><p class="sub">Edit the stock (copies) of any book and press Save. It cannot be lower than the copies currently issued.</p>
+    ${table(['ID', 'Title', 'Issued now', 'Stock (copies)', ''], books.map(b => `<tr><td>${b.id}</td><td>${bb(b.id, b.title)}</td><td>${b.out}</td><td><input id="stk${b.id}" type="number" min="${b.out}" value="${b.stock}" style="width:90px"></td>
+      <td><button class="small" onclick="saveStock(${b.id})">Save</button></td></tr>`), 'No books yet.')}</div>
+  <div class="card"><h2>Books currently out (${out.length})</h2>${table(['Book', 'Held by', 'Issued', 'Due', ''], out.map(t => `<tr><td>${bb(t.bookId, t.title)}</td><td>${ub(t.user)}</td><td>${fmtDate(t.issuedAt)}</td><td>${duePill(t)}</td>
+      <td><button class="small green" data-u="${esc(t.user)}" onclick="adminReturn(this.dataset.u,${t.bookId})">Mark returned</button></td></tr>`), 'Everything is on the shelf.')}</div>
+  <div class="card"><h2>Never issued (${books.filter(b => !b.timesIssued).length})</h2><p class="sub">Books nobody has borrowed yet.</p>
+    ${table(['ID', 'Title', 'Author', 'Genre'], books.filter(b => !b.timesIssued).map(b => `<tr><td>${b.id}</td><td>${bb(b.id, b.title)}</td><td>${esc(b.author)}</td><td>${esc(b.genre)}</td></tr>`), 'All books have been issued at least once.')}</div>`;
+}
+
+const saveStock = id => act(() => api('PUT', '/api/books/' + id + '/stock', { stock: $('stk' + id).value }), 'Stock updated');
+
+// ---------- ADMIN: issue log ----------
+async function viewLog(v) {
+  const qs = new URLSearchParams(T).toString(), tx = await api('GET', '/api/transactions?' + qs);
+  const rows = tx.map(t => `<tr><td>${t.seq}</td><td>${ub(t.user)}</td><td>${bb(t.bookId, t.title)}</td><td>${statusPill(t)}</td><td>${fmtDate(t.issuedAt)}</td><td class="nowrap">${fmtDay(t.dueAt)}</td><td>${t.returnedAt ? fmtDate(t.returnedAt) : NR}</td><td>${t.fine ? `<b>${money(t.fine)}</b> <span class="muted">(${t.overdueDays}d)</span>` : NR}</td>
+    <td>${t.status === 'ISSUED' ? `<button class="small green" data-u="${esc(t.user)}" onclick="adminReturn(this.dataset.u,${t.bookId})">Return</button>` : ''}</td></tr>`);
+  v.innerHTML = `<div class="card"><h2>Issue log</h2><p class="sub">Every issue and return: which student, which book, whether it came back, and any fine.</p><div class="row">
+    <input id="fu" placeholder="Student ID" value="${esc(T.user)}"><input id="fb" placeholder="Book title or ID" value="${esc(T.book)}">
+    <select id="fs"><option value="">All</option><option value="ISSUED">Not returned</option><option value="OVERDUE">Overdue</option><option value="RETURNED">Returned</option></select>
+    <button onclick="T.user=$('fu').value;T.book=$('fb').value;T.status=$('fs').value;render()">Filter</button>
+    <button class="ghost" onclick="Object.assign(T,{user:'',book:'',status:''});render()">Reset</button><button class="ghost" onclick="exportCsv('transactions')">⬇ CSV</button></div>
+    <p class="sub">${tx.length} record${tx.length === 1 ? '' : 's'}</p>
+    ${table(['#', 'Student', 'Book', 'Status', 'Issued', 'Due', 'Returned', 'Fine', ''], rows, 'No records match.')}</div>`;
+  $('fs').value = T.status;
+}
+
+// ---------- ADMIN: students ----------
+async function viewStudents(v) {
+  const st = await api('GET', '/api/students');
+  v.innerHTML = `<div class="card"><h2>Student lookup</h2><p class="sub">Type a student ID to see what they have issued.</p><div class="row">
+    <input id="sid" list="sl" placeholder="Student ID (e.g. priya)"><datalist id="sl">${st.map(s => `<option value="${esc(s.username)}">`).join('')}</datalist><button onclick="openStudent($('sid').value)">Search</button></div></div>
+  <div class="card"><h2>All students (${st.length})</h2>${table(['Student ID', 'Issued now', 'Borrowed overall', 'Overdue', 'Fines', ''], st.map(s => `<tr><td>${ub(s.username)}</td><td><span class="pill ${s.current ? 'warn' : 'in'}">${s.current}</span></td><td>${s.total}</td>
+      <td>${s.overdue ? `<span class="pill out">${s.overdue}</span>` : NR}</td><td>${s.fines ? `<b>${money(s.fines)}</b>` : NR}</td>
+      <td><div class="acts"><button class="small ghost" data-u="${esc(s.username)}" onclick="openStudent(this.dataset.u)">View</button><button class="small ghost" data-u="${esc(s.username)}" onclick="resetPw(this.dataset.u)">Reset password</button><button class="small danger" data-u="${esc(s.username)}" onclick="delStudent(this.dataset.u)">Delete</button></div></td></tr>`), 'No students yet.')}</div>
+  <div class="card"><h2>Create a student account</h2><p class="sub">The username is the student's ID.</p><div class="row"><input id="nu" placeholder="Student ID / username"><input id="np" type="password" placeholder="Password"><button onclick="addUser()">Create</button></div></div>`;
+  $('sid').onkeydown = e => { if (e.key === 'Enter') openStudent($('sid').value); };
+}
+async function openStudent(name) {
+  name = (name || '').trim(); if (!name) return toast('Enter a student ID', false);
+  let s; try { s = await api('GET', '/api/students/' + encodeURIComponent(name)); } catch (e) { return toast(e.message, false); }
+  const cur = s.current.map(t => `<tr><td>${t.bookId}</td><td>${bb(t.bookId, t.title)}</td><td>${esc(t.author)}</td><td>${fmtDate(t.issuedAt)}</td><td>${duePill(t)}</td><td>${heldFor(t.issuedAt)}</td>
+    <td><button class="small green" data-u="${esc(s.username)}" onclick="adminReturn(this.dataset.u,${t.bookId})">Return</button></td></tr>`);
+  const his = s.history.map(t => `<tr><td>${t.bookId}</td><td>${bb(t.bookId, t.title)}</td><td>${fmtDate(t.issuedAt)}</td><td>${fmtDate(t.returnedAt)}</td><td>${t.fine ? money(t.fine) : NR}</td></tr>`);
+  openModal(`<div class="card"><div class="profile"><div class="avatar">${esc(s.username[0].toUpperCase())}</div><div><h2>${esc(s.username)}</h2><span class="muted" style="font-size:13px">Student ID</span></div></div>
+    <div class="stats" style="margin-bottom:0">${card(s.currentCount, 'Books issued now', 'warn')}${card(s.totalCount, 'Borrowed overall')}${card(s.totalCount - s.currentCount, 'Returned', 'good')}${card(s.overdueCount, 'Overdue', s.overdueCount ? 'bad' : '')}${card(money(s.fines), 'Fines', s.fines ? 'bad' : '')}</div>
+    <h3>Currently issued (${s.currentCount})</h3>${table(['ID', 'Title', 'Author', 'Date of issue', 'Due', 'Held for', ''], cur, 'No books issued right now.')}
+    <h3>Past borrowing</h3>${table(['ID', 'Title', 'Issued on', 'Returned on', 'Fine'], his, 'No returned books yet.')}
+    <h3>Recommended for ${esc(s.username)}</h3>${table(['ID', 'Title', 'Genre', 'Score'], s.recommendations.map(b => `<tr><td>${b.id}</td><td>${esc(b.title)}</td><td>${esc(b.genre)}</td><td>${b.score}</td></tr>`), 'No recommendations yet.')}</div>`);
+}
+const addUser = () => act(() => api('POST', '/api/users', { username: $('nu').value, password: $('np').value }), 'Student account created');
+const resetPw = u => { const p = prompt('New password for ' + u + ':'); if (p) act(() => api('POST', `/api/students/${encodeURIComponent(u)}/password`, { password: p }), 'Password reset'); };
+const delStudent = u => confirm(`Delete student ${u}? Their past records stay in the issue log.`) && act(() => api('DELETE', '/api/students/' + encodeURIComponent(u)), 'Student deleted');
+
+// ---------- ADMIN: issue / return desk ----------
+async function viewDesk(v) {
+  const [st, books, out] = await Promise.all([api('GET', '/api/students'), api('GET', '/api/books?sort=title'), api('GET', '/api/transactions?status=ISSUED')]);
+  v.innerHTML = `<div class="grid2"><div class="card"><h2>Issue a book to a student</h2><p class="sub">Only available books are listed.</p><div class="row">
+      <select id="ds" style="flex:1"><option value="">Select student…</option>${st.map(s => `<option>${esc(s.username)}</option>`).join('')}</select></div><div class="row">
+      <select id="db" style="flex:1"><option value="">Select book…</option>${books.filter(b => b.available).map(b => `<option value="${b.id}">${b.id} · ${esc(b.title)}</option>`).join('')}</select></div>
+      <button onclick="deskIssue()">Issue book</button></div>
+    <div class="card"><h2>Return a book</h2><p class="sub">Books currently on loan (${out.length}).</p><div class="row">
+      <select id="dr" style="flex:1"><option value="">Select loan…</option>${out.map(t => `<option value="${esc(t.user)}|${t.bookId}">${esc(t.user)} — ${t.bookId} · ${esc(t.title)}</option>`).join('')}</select></div>
+      <button class="green" onclick="deskReturn()">Mark returned</button></div></div>`;
+}
+const deskIssue = () => $('ds').value && $('db').value ? act(() => api('POST', '/api/admin/issue', { user: $('ds').value, id: $('db').value }), 'Book issued') : toast('Choose a student and a book', false);
+const deskReturn = () => { const x = $('dr').value; if (!x) return toast('Choose a loan', false); const [u, id] = x.split('|'); adminReturn(u, id); };
+const adminReturn = (user, id) => act(() => api('POST', '/api/admin/return', { user, id }), 'Book marked as returned', () => { if (modalOpen()) closeModal(); });
+
+// ---------- ADMIN: add book / settings ----------
+function viewAdd(v) {
+  v.innerHTML = `<div class="card"><h2>Add a book</h2><p class="sub">New books start as available.</p><div class="row">
+    <input id="bid" type="number" min="1" placeholder="ID"><input id="bt" placeholder="Title"><input id="ba" placeholder="Author"><input id="bg" placeholder="Genre"><button onclick="addBook()">Add book</button></div></div>`;
+}
+const addBook = () => act(() => api('POST', '/api/books', { id: $('bid').value, title: $('bt').value, author: $('ba').value, genre: $('bg').value }), 'Book added', () => tab = 'books');
+async function viewSettings(v) {
+  const s = await api('GET', '/api/settings');
+  v.innerHTML = `<div class="card"><h2>Loan rules</h2><p class="sub">Used to calculate due dates, overdue books and fines (only for books issued through the website).</p><div class="row">
+    <label>Loan period (days) <input id="sl1" type="number" min="1" value="${s.loanDays}" style="width:110px;flex:none"></label>
+    <label>Fine per day (₹) <input id="sl2" type="number" min="0" value="${s.finePerDay}" style="width:110px;flex:none"></label>
+    <button onclick="act(()=>api('PUT','/api/settings',{loanDays:$('sl1').value,finePerDay:$('sl2').value}),'Settings saved')">Save</button></div></div>
+  <div class="card"><h2>Export data</h2><div class="row"><button class="ghost" onclick="exportCsv('books')">⬇ Books (CSV)</button><button class="ghost" onclick="exportCsv('transactions')">⬇ Issue log (CSV)</button></div></div>` + accountCard();
+}
+async function exportCsv(what) {
+  try { const r = await api('GET', '/api/export/' + what, null, true), a = document.createElement('a');
+    a.href = URL.createObjectURL(await r.blob()); a.download = what + '.csv'; a.click(); } catch (e) { toast(e.message, false); }
+}
+
+// ---------- STUDENT views ----------
+async function viewMine(v) {
+  const r = (await api('GET', '/api/history')).filter(x => x.status === 'ISSUED');
+  v.innerHTML = `<div class="card"><h2>My issued books</h2><p class="sub">You currently have ${r.length} book${r.length === 1 ? '' : 's'}.</p>
+    ${table(['ID', 'Title', 'Author', 'Date of issue', 'Due date', ''], r.map(x => `<tr><td>${x.bookId}</td><td><b>${esc(x.title)}</b></td><td>${esc(x.author)}</td><td>${fmtDate(x.issuedAt)}</td><td>${duePill(x)}</td><td><button class="small" onclick="ret(${x.bookId})">Return</button></td></tr>`), 'You have no books issued. Browse the library to borrow one!')}</div>`;
+}
+async function viewHistory(v) {
+  const r = await api('GET', '/api/history');
+  v.innerHTML = `<div class="card"><h2>My borrowing history</h2><p class="sub">Newest first.</p>${table(['ID', 'Title', 'Issued on', 'Returned on', 'Status', 'Fine'],
+    r.map(x => `<tr><td>${x.bookId}</td><td>${esc(x.title)}</td><td>${fmtDate(x.issuedAt)}</td><td>${x.status === 'ISSUED' ? NR : fmtDate(x.returnedAt)}</td><td>${statusPill(x)}</td><td>${x.fine ? money(x.fine) : NR}</td></tr>`), 'You have not borrowed any books yet.')}</div>`;
+}
+async function viewRecs(v) {
+  const r = await api('GET', '/api/recommendations');
+  v.innerHTML = `<div class="card"><h2>Recommended for you</h2><p class="sub">Same genre +2 points, same author +3 points, based on what you've read.</p>${table(['ID', 'Title', 'Author', 'Genre', 'Score', ''],
+    r.books.map(b => `<tr><td>${b.id}</td><td><b>${esc(b.title)}</b></td><td>${esc(b.author)}</td><td>${esc(b.genre)}</td><td><b>${b.score}</b></td><td>${b.available ? `<button class="small" onclick="issue(${b.id})">Issue</button>` : bookPill(0)}</td></tr>`), esc(r.message || 'No recommendations yet.'))}</div>`;
+}
+const viewAccount = v => { v.innerHTML = accountCard(); };
+const accountCard = () => `<div class="card"><h2>Change my password</h2><div class="row"><input id="po" type="password" placeholder="Current password"><input id="pn" type="password" placeholder="New password">
+  <button onclick="act(async()=>{await api('POST','/api/password',{oldPassword:$('po').value,newPassword:$('pn').value});$('po').value='';$('pn').value=''},'Password changed')">Change</button></div></div>`;
+
+// ---------- shared actions ----------
+const issue = id => act(() => api('POST', '/api/issue', { id }), 'Book issued');
+const ret = id => act(() => api('POST', '/api/return', { id }), 'Book returned');
+const delBook = id => confirm(`Delete book ${id}?`) && act(() => api('DELETE', '/api/books/' + id), 'Book deleted');
+</script>
+</body>
+</html>
