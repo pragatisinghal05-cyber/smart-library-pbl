@@ -5,3 +5,4 @@
 - Linked list - every book is a node; head points to the first book.
 - Recommendation - unread books score +2 for same genre and +3 for same author.
 - File handling - books, users and issues are saved as text files in data/.
+- OOP - User is abstract; Student and Admin override menu() (polymorphism).
