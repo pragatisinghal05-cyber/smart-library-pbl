@@ -9,3 +9,4 @@ library.exe
 bin/
 obj/
 data/auth.json
+node_modules/
