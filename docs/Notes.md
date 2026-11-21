@@ -16,3 +16,4 @@
 - Glossary - Node: one item of a linked list or tree that points to others.
 - Sample data - data_sample/ is a clean copy; copy it into data/ to reset.
 - Build - gcc -c src/library.c, g++ -c src/main.cpp, then link both with g++.
+- Changelog - Oct 2026: C core and C++ classes. Nov 2026: docs, web version, Makefile.
