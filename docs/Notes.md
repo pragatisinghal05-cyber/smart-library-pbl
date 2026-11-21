@@ -3,3 +3,4 @@
 - BST - titles are kept in A-Z order, smaller to the left, bigger to the right.
 - Sorting - bubble sort orders books by title, author or popularity.
 - Linked list - every book is a node; head points to the first book.
+- Recommendation - unread books score +2 for same genre and +3 for same author.
