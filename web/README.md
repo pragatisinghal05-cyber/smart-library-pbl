@@ -31,3 +31,4 @@ Browse and search books, issue, return, my issued books (with due date and fines
 
 Books issued before the web app existed (or through the console program) show "Not recorded" for dates and have no fine.
 Each book is a single copy (same as the C program), so "stock" means available vs issued.
+- Tip: the admin recovery key is shown only on first start, save it.
