@@ -67,3 +67,4 @@ void  showSorted(int mode);                /* 1 title, 2 author, 3 popularity */
 }
 #endif
 #endif
+/* end of library.h */
