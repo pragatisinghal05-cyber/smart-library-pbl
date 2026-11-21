@@ -1244,3 +1244,4 @@ void showSorted(int mode) {                           /* showSorted: prints all 
     printBookHeader();                                /* print the table heading */
     for (i = 0; i < n; i++) displayBook(arr[i]);      /* print each book in the sorted order */
 }                                                     /* end of showSorted */
+/* End of library.c - Part 1 (list, files) and Part 2 (hash, BST, sort) */
