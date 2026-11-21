@@ -8,3 +8,4 @@
 - OOP - User is abstract; Student and Admin override menu() (polymorphism).
 - Limits - MAX_BOOKS is 500 and MAX_HISTORY is 200 (see src/library.h).
 - Data format - books.txt line: id|title|author|genre|available|timesIssued
+- Demo logins - admin/admin123, priya/priya123, rahul/rahul123
