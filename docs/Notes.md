@@ -13,3 +13,4 @@
 - Web API - all routes are in web/server.js and start with /api/
 - Testing - run bash run_tests.sh; each test starts from data_sample/.
 - Windows setup - use Code::Blocks with MinGW, or Git Bash with gcc and g++.
+- Glossary - Node: one item of a linked list or tree that points to others.
