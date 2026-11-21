@@ -12,3 +12,4 @@
 - Future work - balanced BST, faster sort, hashed passwords, due dates in console.
 - Web API - all routes are in web/server.js and start with /api/
 - Testing - run bash run_tests.sh; each test starts from data_sample/.
+- Windows setup - use Code::Blocks with MinGW, or Git Bash with gcc and g++.
