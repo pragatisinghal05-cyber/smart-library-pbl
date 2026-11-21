@@ -18,3 +18,4 @@
 - Build - gcc -c src/library.c, g++ -c src/main.cpp, then link both with g++.
 - Changelog - Oct 2026: C core and C++ classes. Nov 2026: docs, web version, Makefile.
 - Contributing - pull first, run make test before every push.
+- Security - demo project only, passwords are stored as plain text.
