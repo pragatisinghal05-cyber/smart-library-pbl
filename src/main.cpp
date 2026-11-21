@@ -684,3 +684,4 @@ int main() {                                          // main: the program start
     cout << "Thank you. Goodbye!\n";                  // say goodbye
     return 0;                                         // 0 = the program ended normally
 }                                                     // end of main
+// End of main.cpp - classes, recommender, login and main loop
