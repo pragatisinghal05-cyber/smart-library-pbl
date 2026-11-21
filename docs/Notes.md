@@ -2,3 +2,4 @@
 - Hashing - id % 101 picks the slot; books in the same slot are chained.
 - BST - titles are kept in A-Z order, smaller to the left, bigger to the right.
 - Sorting - bubble sort orders books by title, author or popularity.
+- Linked list - every book is a node; head points to the first book.
