@@ -15,3 +15,4 @@
 - Windows setup - use Code::Blocks with MinGW, or Git Bash with gcc and g++.
 - Glossary - Node: one item of a linked list or tree that points to others.
 - Sample data - data_sample/ is a clean copy; copy it into data/ to reset.
+- Build - gcc -c src/library.c, g++ -c src/main.cpp, then link both with g++.
