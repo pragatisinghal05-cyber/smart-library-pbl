@@ -74,3 +74,4 @@ grep -n "PART\|OWNER" src/*
 node web/server.js     # needs Node.js 16+, no npm install
 ```
 Then open http://localhost:3000. It uses the same `data/*.txt` files and the same logins as the console program.
+> Tip: run make test before every push (all 17 tests should pass).
